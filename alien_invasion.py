@@ -2,12 +2,15 @@ import sys
 
 import pygame
 
+from settings import Settings
+
 
 def run_game():
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
+    settings = Settings()
+    screen = pygame.display.set_mode((settings.screen_width, settings.screen_height))
     pygame.display.set_caption("Alien Invasion")
-    bg_color = (48, 0, 72)
+    bg_color = settings.bg_color
     clock = pygame.time.Clock()
 
     running = True
