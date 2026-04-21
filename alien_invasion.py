@@ -20,7 +20,18 @@ def run_game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    ship.moving_right = True
+                elif event.key == pygame.K_LEFT:
+                    ship.moving_left = True
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    ship.moving_right = False
+                elif event.key == pygame.K_LEFT:
+                    ship.moving_left = False
 
+        ship.update()
         screen.fill(bg_color)
         ship.blitme()
         pygame.display.flip()

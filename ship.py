@@ -21,6 +21,20 @@ class Ship:
         self.rect.centerx = self.screen_rect.centerx
         self.rect.bottom = self.screen_rect.bottom
 
+        # Movement flags
+        self.moving_right = False
+        self.moving_left = False
+
+        # Ship speed
+        self.speed = 1.5
+
     def blitme(self):
         """Draw the ship at its current location."""
         self.screen.blit(self.image, self.rect)
+
+    def update(self):
+        """Update the ship's position based on movement flags."""
+        if self.moving_right and self.rect.right < self.screen_rect.right:
+            self.rect.centerx += self.speed
+        if self.moving_left and self.rect.left > 0:
+            self.rect.centerx -= self.speed
