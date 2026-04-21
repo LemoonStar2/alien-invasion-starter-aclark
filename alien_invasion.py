@@ -4,6 +4,7 @@ import pygame
 
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 
 def run_game():
@@ -13,6 +14,7 @@ def run_game():
     pygame.display.set_caption("Alien Invasion")
     bg_color = settings.bg_color
     ship = Ship(screen)
+    bullets = pygame.sprite.Group()
     clock = pygame.time.Clock()
 
     running = True
@@ -25,6 +27,10 @@ def run_game():
                     ship.moving_right = True
                 elif event.key == pygame.K_LEFT:
                     ship.moving_left = True
+                elif event.key == pygame.K_SPACE:
+                    if len(bullets) < 3:
+                        new_bullet = Bullet(screen, ship)
+                        bullets.add(new_bullet)
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT:
                     ship.moving_right = False
@@ -32,8 +38,11 @@ def run_game():
                     ship.moving_left = False
 
         ship.update()
+        bullets.update()
         screen.fill(bg_color)
         ship.blitme()
+        for bullet in bullets:
+            bullet.draw_bullet()
         pygame.display.flip()
         clock.tick(60)
 
