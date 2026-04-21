@@ -26,7 +26,7 @@ class Ship:
         self.moving_left = False
 
         # Ship speed
-        self.speed = 1.5
+        self.speed = 2
 
     def blitme(self):
         """Draw the ship at its current location."""
