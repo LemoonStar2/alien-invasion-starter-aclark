@@ -66,6 +66,8 @@ def run_game():
             _update_bullets(bullets)
             alien_fleet.update()
             pygame.sprite.groupcollide(bullets, alien_fleet.aliens, True, True)
+            if not alien_fleet.aliens:
+                alien_fleet._reset_fleet()
             _update_screen(settings, screen, ship, bullets, alien_fleet, bg_color)
             clock.tick(60)
 

@@ -26,8 +26,16 @@ class aliens:
             y = y_start
             self.aliens.add(self._Alien(self.screen, x, y, alien_width, alien_height))
 
+    def _reset_fleet(self):
+        """Reset the fleet to its original top row and starting direction."""
+        self.direction = 1
+        self.aliens.empty()
+        self._create_fleet()
+
     def update(self):
         """Move the fleet right, then down, then left, then down."""
+        if not self.aliens:
+            self._reset_fleet()
         self.aliens.update(self.direction)
         self._check_edges()
 
