@@ -6,6 +6,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from aliens import aliens
 
 
 def run_game():
@@ -16,6 +17,7 @@ def run_game():
     bg_color = settings.bg_color
     ship = Ship(screen)
     bullets = pygame.sprite.Group()
+    alien_fleet = aliens(screen)
     clock = pygame.time.Clock()
 
     def _check_events(ship, bullets):
@@ -47,10 +49,11 @@ def run_game():
         """Update position of bullets and get rid of old bullets."""
         bullets.update()
 
-    def _update_screen(settings, screen, ship, bullets, bg_color):
+    def _update_screen(settings, screen, ship, bullets, alien_fleet, bg_color):
         """Update images on the screen and flip to the new screen."""
         screen.fill(bg_color)
         ship.blitme()
+        alien_fleet.draw()
         for bullet in bullets:
             bullet.draw_bullet()
         pygame.display.flip()
@@ -61,7 +64,9 @@ def run_game():
         if running:
             ship.update()
             _update_bullets(bullets)
-            _update_screen(settings, screen, ship, bullets, bg_color)
+            alien_fleet.update()
+            pygame.sprite.groupcollide(bullets, alien_fleet.aliens, True, True)
+            _update_screen(settings, screen, ship, bullets, alien_fleet, bg_color)
             clock.tick(60)
 
     pygame.quit()
