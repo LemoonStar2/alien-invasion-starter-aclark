@@ -30,7 +30,7 @@ class Ship:
         self.moving_left = False
 
         # Ship speed
-        self.speed = 2
+        self.speed = 6
 
         # Color changing flag
         self.color_changing = False

@@ -1,4 +1,36 @@
 import pygame
+import random
+import time
+
+
+class Particle(pygame.sprite.Sprite):
+    """A particle effect for bullet fire."""
+    
+    def __init__(self, screen, x, y):
+        super().__init__()
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.vx = random.uniform(-3, 3)  # Random x velocity
+        self.vy = random.uniform(-4, -1)  # Random y velocity (upward)
+        self.lifetime = 0.3  # Seconds
+        self.creation_time = time.time()
+        self.size = random.randint(2, 5)
+        self.color = random.choice([(255, 200, 0), (255, 100, 0), (255, 150, 50)])
+    
+    def update(self):
+        """Move the particle and remove if lifetime expired."""
+        self.x += self.vx
+        self.y += self.vy
+        
+        elapsed = time.time() - self.creation_time
+        if elapsed > self.lifetime:
+            self.kill()
+    
+    def draw(self, screen):
+        """Draw the particle."""
+        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.size)
+
 
 class Bullet(pygame.sprite.Sprite):
     """A class to manage bullets fired from the ship."""
@@ -11,7 +43,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centerx = ship.rect.centerx
         self.rect.bottom = ship.rect.top
         self.color = (255, 255, 255)
-        self.speed = -4
+        self.speed = -18
 
     def update(self):
         """Move the bullet up the screen."""
