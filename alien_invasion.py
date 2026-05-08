@@ -14,6 +14,7 @@ from explosion import Explosion
 
 def run_game():
     pygame.init()
+    pygame.mixer.init()
     settings = Settings()
     screen = pygame.display.set_mode((settings.screen_width, settings.screen_height))
     screen_rect = screen.get_rect()
@@ -104,6 +105,34 @@ def run_game():
         """Update position of bullets and get rid of old bullets."""
         bullets.update()
         alien_bullets.update()
+
+    def _create_thump_sound():
+        """Create a simple thump sound effect."""
+        import math
+        sample_rate = 22050
+        duration = 0.1  # 100ms
+        frequency = 150  # Low frequency for thump
+        num_samples = int(sample_rate * duration)
+        
+        # Generate mono sound data
+        sound_data = bytearray()
+        for i in range(num_samples):
+            t = i / sample_rate
+            # Sine wave with exponential decay envelope
+            envelope = math.exp(-5 * t / duration)
+            sample_val = math.sin(2 * math.pi * frequency * t) * envelope
+            # Convert to unsigned 8-bit (0-255 range, 128 is silence)
+            byte_val = int((sample_val + 1) * 127 / 2) + 128
+            byte_val = max(0, min(255, byte_val))
+            sound_data.append(byte_val)
+        
+        # Create pygame sound from the byte data
+        sound = pygame.mixer.Sound(buffer=sound_data)
+        sound.set_volume(0.5)
+        return sound
+
+    thump_sound = _create_thump_sound()
+    alien_fleet.thump_sound = thump_sound
 
     def _create_space_background(settings):
         """Create a space-themed background surface."""

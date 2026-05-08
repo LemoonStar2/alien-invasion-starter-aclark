@@ -15,6 +15,7 @@ class aliens:
         self.speed = self.base_speed
         self.speed_boost = 0.5
         self.drop_speed = 50
+        self.thump_sound = None
         self._create_fleet()
 
     def _create_fleet(self):
@@ -63,6 +64,10 @@ class aliens:
             alien.rect.y += self.drop_speed
         self.direction *= -1
         self.speed += self.speed_boost
+        
+        # Play thump sound
+        if self.thump_sound:
+            self.thump_sound.play()
 
     def draw(self):
         """Draw all aliens to the screen."""
@@ -135,7 +140,7 @@ class aliens:
             # Randomly shoot bullets (chance increases with round)
             shoot_chance = 0.001 + round_number * 0.001
             if random.random() < shoot_chance:
-                self.shoot(alien_bullets)
+                self.shoot(alien_bullets, round_number)
             
             # Update animation frame every 0.5 seconds (cycles every 2 seconds total)
             elapsed = time.time() - self.animation_start_time
@@ -143,11 +148,16 @@ class aliens:
             self.current_frame = frame_index
             self.image = self.frames[self.current_frame]
 
-        def shoot(self, alien_bullets):
-            """Shoot a bullet downward."""
-            from bullet import AlienBullet
-            new_bullet = AlienBullet(self.screen, self)
-            alien_bullets.add(new_bullet)
+        def shoot(self, alien_bullets, round_number):
+            """Shoot a bullet downward, limited by round number."""
+            # Calculate max bullets allowed: 4 base + 1 per round after first
+            max_bullets = 4 + (round_number - 1)
+            
+            # Only shoot if under the limit
+            if len(alien_bullets) < max_bullets:
+                from bullet import AlienBullet
+                new_bullet = AlienBullet(self.screen, self)
+                alien_bullets.add(new_bullet)
 
         def draw(self):
             self.screen.blit(self.image, self.rect)
