@@ -55,3 +55,28 @@ class Bullet(pygame.sprite.Sprite):
     def draw_bullet(self):
         """Draw the bullet to the screen."""
         pygame.draw.rect(self.screen, self.color, self.rect)
+
+
+class AlienBullet(pygame.sprite.Sprite):
+    """A class to manage bullets fired from aliens."""
+
+    def __init__(self, screen, alien):
+        """Create an alien bullet object at the alien's current position."""
+        super().__init__()
+        self.screen = screen
+        self.rect = pygame.Rect(0, 0, 3, 15)
+        self.rect.centerx = alien.rect.centerx
+        self.rect.top = alien.rect.bottom
+        self.color = (255, 100, 100)  # Reddish color
+        self.speed = 4  # Positive to go down
+
+    def update(self):
+        """Move the bullet down the screen."""
+        self.rect.y += self.speed
+        # Remove the bullet if it goes off the bottom of the screen
+        if self.rect.top > self.screen.get_height():
+            self.kill()
+
+    def draw_bullet(self):
+        """Draw the bullet to the screen."""
+        pygame.draw.rect(self.screen, self.color, self.rect)

@@ -1,5 +1,6 @@
 import pygame
 import time
+import random
 
 
 class aliens:
@@ -40,13 +41,13 @@ class aliens:
         self.aliens.empty()
         self._create_fleet()
 
-    def update(self, respawn_allowed=True):
+    def update(self, respawn_allowed=True, alien_bullets=None, round_number=1):
         """Move the fleet right, then down, then left, then down."""
         if not self.aliens:
             if respawn_allowed:
                 self._reset_fleet()
             return
-        self.aliens.update(self.direction, self.speed)
+        self.aliens.update(self.direction, self.speed, alien_bullets, round_number)
         self._check_edges()
 
     def _check_edges(self):
@@ -113,7 +114,7 @@ class aliens:
                 right_eye_radius = 2 if blink else 1
                 pygame.draw.circle(frame, (255, 200, 0), left_eye_center, left_eye_radius)
                 pygame.draw.circle(frame, (0, 0, 0), left_eye_center, 1)
-                pygame.draw.circle(frame, (255, 200, 0), right_eye_center, right_eye_radius)
+                pygame.draw.circle(frame, (0, 200, 255), right_eye_center, right_eye_radius)
                 pygame.draw.circle(frame, (0, 0, 0), right_eye_center, 1)
 
                 # Antennae bend and wiggle
@@ -127,15 +128,26 @@ class aliens:
             
             return frames
 
-        def update(self, direction, speed):
+        def update(self, direction, speed, alien_bullets, round_number):
             """Update alien position and animation."""
             self.rect.x += direction * speed
+            
+            # Randomly shoot bullets (chance increases with round)
+            shoot_chance = 0.001 + round_number * 0.001
+            if random.random() < shoot_chance:
+                self.shoot(alien_bullets)
             
             # Update animation frame every 0.5 seconds (cycles every 2 seconds total)
             elapsed = time.time() - self.animation_start_time
             frame_index = int(elapsed / self.frame_duration) % len(self.frames)
             self.current_frame = frame_index
             self.image = self.frames[self.current_frame]
+
+        def shoot(self, alien_bullets):
+            """Shoot a bullet downward."""
+            from bullet import AlienBullet
+            new_bullet = AlienBullet(self.screen, self)
+            alien_bullets.add(new_bullet)
 
         def draw(self):
             self.screen.blit(self.image, self.rect)
